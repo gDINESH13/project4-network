@@ -1,0 +1,13 @@
+.newtweet
+{
+	margin:10%;
+	width:40%;
+	height: 50%;
+	border-radius: 2px;
+	border-color: 1px solid blue;
+}
+#image
+{
+	width:10px;
+	height: 10px;
+}

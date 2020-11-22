@@ -1,0 +1,143 @@
+{% extends "network/layout.html "%}
+{%	block style %}
+	<style type="text/css">
+		#image
+		{
+			width: 50%;
+			height: 200px;
+		}
+		#username
+		{
+			position: absolute;
+			
+			width:50%;
+			right:0px;
+			margin: 0px;
+			left:17%;
+		}
+		#followers
+		{
+			font-size: 200%;
+			position: absolute;
+			top:15%;
+			right:17%;
+		}
+		#following
+		{
+			font-size: 200%;
+			position: absolute;
+			right: 17%;
+			top:40%;
+		}
+		#follow
+		{
+			background-color: #0f2862;
+			color:#add8e6;
+			border-radius: 10px;
+			border-color: 1px red;
+			position: absolute;
+			top:75%;
+			width: 20%;
+			left:15%;
+		}
+		.button
+		{
+			font: bold 15px Arial;
+ 			 text-decoration: none;
+  			background-color: #0f2862;
+  			color: #add8e6;
+  			border-radius: 10px;
+			border-color: 1px red;
+			position: absolute;
+			top:75%;
+			width: 20%;
+			left:15%;
+			padding: 6px;
+			padding-left: 28px;
+		}
+		#edit
+      {
+        background-color:#0f2862;
+        size: 10px;
+        color: #add8e6;
+        width: 50px;
+        position: relative;
+        left:85%;
+      }
+      #pagiator
+            {
+                position: absolute;
+                left:74%;
+                top: 25%;
+            }
+	</style>
+{% endblock %}
+{% block body %}
+	{% if user.is_authenticated %}
+		
+		<div class="profile">
+			<img src="https://clubsports.gcu.edu/wp-content/uploads/Coach-Avator.png" id="image">
+			<h3  id="username">{{use.username}}</h3>
+			<p id="followers"> <strong>{{numFollowers}}</strong> Followers</p>
+			<p id="following"> <strong>{{numFollowed}}</strong> Following</p>
+			
+
+			{% if use.username != user.username %}
+				<!--toogle button text to follow and unfollow-->
+				<form method="post" action="{% url 'profile' use.username %}">
+					{% csrf_token %}
+					{% if isfollower %}
+					<button id="follow">Unfollow</button> 
+					{% else %}
+					<button id="follow">Follow</button>
+					{%  endif %}
+				</form>
+			{% endif %}
+		</div> 
+		
+		<div id="pagiator" style="color:#add8e6 ">
+        	{% if posts.has_previous %}
+              <a style="font-size: 20px;" href="?page={{ posts.previous_page_number }}"> Prev </a>&nbsp;
+        	{% endif %}
+              &nbsp;<strong>{{posts.number}}</strong>&nbsp;
+        	{% if posts.has_next %}
+              &nbsp;<a style="font-size: 20px;" href="?page={{ posts.next_page_number }}"> Next </a>
+        	{% endif %}
+        </div>
+		<div id ="allpost">
+            <p style="color:#add8e6;font-size: 20px; ">Your posts</p>
+   			{% for post in posts %}
+   			<div style="padding: 10px; padding-bottom: 18px; background-color: white;margin:10px;">
+   			    <div >
+                <p  style="font-size:15px;color: black;">Posted by
+   			 	      <a href="{% url 'profile' post.author %}" style="padding-left: 0px; font-size: 20px;">{{post.author}}</a></p>
+   			 	      <h6 style="padding-left: 70px;padding-top: 3px;">{{post.content}}</h6>
+   			 	      <li class="row justify-content-end" style="padding-right: 20px;">{{post.date}}</li>
+   			    </div>
+            	
+            	<div id="editpost{{post.pk}}" style="display: none;" >
+              		{% csrf_token %}
+              		<textarea style="width: 90%"></textarea> 
+            	</div>
+
+
+            {% if post.author == user %}
+                  <button id="edit" data-id="{{post.pk}}" >Edit</button>
+            {% endif %}
+
+            {% csrf_token %}
+            {% if post in postsliked %}
+            <i class="fas fa-thumbs-up " style="color: blue;" id="likepost" data-id="{{post.pk}}"></i><span style="position: absolute; left:15% " id="totallikes{{post.pk}}">({{post.totallikes}})</span>
+            {% else %}
+            <i class="fas fa-thumbs-up "  id="likepost"  data-id="{{post.pk}}"></i><span style="position: absolute; left:15% " id="totallikes{{post.pk}}">({{post.totallikes}})</span>
+            {% endif %}
+             
+   			</div>
+            {% empty%}
+               <p> No Posts.</p>
+   			{% endfor %}
+           
+   		</div>
+
+	{% endif %}
+{% endblock %}

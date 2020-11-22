@@ -1,0 +1,109 @@
+{% extends "network/layout.html" %}
+{% block style %}
+   <style type="text/css">
+      h4
+      {
+         padding-top: 10px;
+         padding-left: 140px;
+         padding-bottom: 5px;
+      }
+      #users
+      {
+         font-size: 20px;
+
+         padding-left: 200px;
+      }
+      #profile
+      {
+          margin-top: 10%;
+                    margin-left: 3%;
+                    width: 30%;
+                    
+                    padding: 10px;
+                    position: fixed;
+                    border-bottom-left-radius: 50px;
+                    border-top-right-radius: 50px;
+                    border-top-left-radius: 15px;
+                    border-bottom-right-radius: 15px;
+                    border-color: 1px solid blue;
+                    background-color:  #add8e6;
+      }
+      #atag
+      {
+         font-family: cursive;
+      }
+      #likepost
+      {
+        position: absolute;
+        left:10%;
+        
+      }
+      #totallikes
+      {
+        position: absolute; 
+        left:13%;
+      }
+   </style>
+{% endblock %}
+{% block script %}
+  
+{% endblock %}
+{% block body %}
+
+	{% if user.is_authenticated %}
+    <div id="profile">
+         <h4 >Users you follow</h4>
+        <div id="users">
+         {% for use in user_follows %}
+               <li><a href="{% url 'profile' user.username %}" id="atag">{{ use.username }}</a></li>
+         {% empty %}
+               <li id="atag">You haven't followed any users</li>
+         {% endfor %}
+         
+        </div>
+    </div>
+    <div id="pagiator" style="color:#add8e6 ">
+        {% if posts.has_previous %}
+              <a style="font-size: 20px;" href="?page={{ posts.previous_page_number }}"> Prev </a>&nbsp;
+        {% endif %}
+              &nbsp;<strong>{{posts.number}}</strong>&nbsp;
+        {% if posts.has_next %}
+              &nbsp;<a style="font-size: 20px;" href="?page={{ posts.next_page_number }}"> Next </a>
+        {% endif %}
+    </div>
+
+		<div id ="allpost">
+            <p style="color:#add8e6;font-size: 20px; ">Posts of Users You Follow</p>
+   			{% for post in posts %}
+   			<div style="padding: 10px; padding-bottom: 18px; background-color: white;margin:10px;">
+   			    <div id="content{{post.pk}}">
+                <p  style="font-size:15px;color: black;">Posted by
+   			 	      <a href="{% url 'profile' post.author %}" style="padding-left: 0px; font-size: 20px;">{{post.author}}</a></p>
+   			 	      <h6 style="padding-left: 70px;padding-top: 3px;">{{post.content}}</h6>
+   			 	      <li class="row justify-content-end" style="padding-right: 20px;">{{post.date}}</li>
+   			    </div>
+            <div id="editpost{{post.pk}}" style="display: none;" >
+              {% csrf_token %}
+              <textarea style="width: 90%"></textarea> 
+            </div>
+
+
+            {% if post.author == user %}
+                  <button id="edit" data-id="{{post.pk}}" >Edit</button>
+            {% endif %}
+            <!-- the color of the thumbs up button specifies whether the user liked the post or not-->
+            {% csrf_token %}
+            {% if post in postsliked %}
+            <i class="fas fa-thumbs-up " style="color: blue;" id="likepost" data-id="{{post.pk}}"></i><span style="position: absolute; left:13% " id="totallikes{{post.pk}}">({{post.totallikes}})</span>
+            {% else %}
+            <i class="fas fa-thumbs-up "  id="likepost"  data-id="{{post.pk}}"></i><span style="position: absolute; left:13% " id="totallikes{{post.pk}}">({{post.totallikes}})</span>
+            {% endif %}
+             
+   			</div>
+            {% empty%}
+               <p> No Posts.</p>
+   			 {% endfor %}
+            
+   		</div>
+   	{% endif %}
+{% endblock %}

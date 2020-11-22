@@ -1,0 +1,68 @@
+{% extends "network/layout.html "%}
+{% block body %}
+   <style type="text/css">
+       #likepost
+      {
+        position: absolute;
+        left:10%;
+        
+      }
+      #totallikes
+      {
+        position: absolute; 
+        left:13%;
+      }
+      #edit
+      {
+        background-color:#0f2862;
+        size: 10px;
+        color: #add8e6;
+        width: 50px;
+        position: relative;
+        left:85%;
+      }
+   </style>
+   <div id="pagiator" style="color:#add8e6 ">
+        {% if posts.has_previous %}
+              <a style="font-size: 20px;" href="?page={{ posts.previous_page_number }}"> Prev </a>&nbsp;
+        {% endif %}
+              &nbsp;<strong>{{posts.number}}</strong>&nbsp;
+        {% if posts.has_next %}
+              &nbsp;<a style="font-size: 20px;" href="?page={{ posts.next_page_number }}"> Next </a>
+        {% endif %}
+    </div>
+	<div id ="allpost">
+            <p style="color:#add8e6;font-size: 20px; ">Posts of Users </p>
+   			{% for post in posts %}
+   			<div style="padding: 10px; padding-bottom: 18px; background-color: white;margin:10px;">
+   			    <div id="content{{post.pk}}">
+                <p  style="font-size:15px;color: black;">Posted by <strong>{{post.author}}</strong> 
+   			 	      </p>
+   			 	      <h6 style="padding-left: 70px;padding-top: 3px;">{{post.content}}</h6>
+   			 	      <li class="row justify-content-end" style="padding-right: 20px;">{{post.date}}</li>
+   			    </div>
+
+               <div id="editpost{{post.pk}}" style="display: none;" >
+                     {% csrf_token %}
+                     <textarea style="width: 90%"></textarea> 
+               </div>
+               {% if user.is_authenticated %}
+                  {% if post.author == user %}
+                     <button id="edit" data-id="{{post.pk}}" >Edit</button>
+                  {% endif %}
+            <!-- the color of the thumbs up button specifies whether the user liked the post or not-->
+                  {% csrf_token %}
+                  {% if post in postsliked %}
+                     <i class="fas fa-thumbs-up " style="color: blue;" id="likepost" data-id="{{post.pk}}"></i><span style="position: absolute; left:13% " id="totallikes{{post.pk}}">({{post.totallikes}})</span>
+                  {% else %}
+                     <i class="fas fa-thumbs-up "  id="likepost"  data-id="{{post.pk}}"></i><span style="position: absolute; left:13% " id="totallikes{{post.pk}}">({{post.totallikes}})</span>
+                  {% endif %}
+               {% endif %}
+   			</div>
+   			
+            {% empty%}
+               <p> No Posts.</p>
+   			{% endfor %}
+           
+   </div>
+{% endblock %}

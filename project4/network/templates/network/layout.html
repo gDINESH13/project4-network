@@ -1,0 +1,118 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Social Network{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+        <script src="https://kit.fontawesome.com/6a0d9c6177.js" crossorigin="anonymous"></script>  
+
+        <link href="{% static 'network/styles.css' %}" rel="stylesheet">
+
+        <script src="{% static 'network/main.js' %}"></script>
+        <style type="text/css">
+            .newtweet,.profile
+                {
+                    margin-top: 10%;
+                    margin-left: 3%;
+                    width: 30%;
+                    height:350px;
+                    padding: 10px;
+                    position: fixed;
+                    border-bottom-left-radius: 50px;
+                    border-top-right-radius: 50px;
+                    border-top-left-radius: 15px;
+                    border-bottom-right-radius: 15px;
+                    border-color: 1px solid blue;
+                    background-color:  #add8e6;
+                }
+            .newtweet textarea
+            {
+                background-color: white;
+                width:70%;
+                height: 200px;
+            }
+            .newtweet button
+            {
+                color:  #add8e6;
+                background-color:  #0f2862;
+                position: relative;
+                top:30px;
+            }
+            #allpost
+            {
+                position: absolute;
+                top:40px;
+                right:200px;
+                left:20px;
+                margin-left: 40%;
+                margin-top:10%;
+                padding:10px;
+                width:40%;
+                border-radius: 50px;
+            }
+            #allpost div
+            {
+
+                padding:10px;
+                padding-left: 50px;
+                background-color: #add8e6;
+                border-bottom-left-radius: 50px;
+                border-top-right-radius: 50px;
+                border-bottom-left-radius: 50px;
+                border-bottom-right-radius: 50px;
+            }
+            #pagiator
+            {
+                position: absolute;
+                left:74%;
+                top: 25%;
+            }
+
+        </style>
+        {% block style %}
+        {% endblock %}
+        {% block script %}
+        {% endblock %}
+    </head>
+    <body style="background-color:  #0f2862">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" >
+            <a class="navbar-brand" href="{% url 'index' %}">Network</a>
+          
+            <div >
+              <ul class="navbar-nav mr-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' user.username %}"><strong>{{ user.username }}</strong></a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'allposts' %}">All Posts</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'following' %}">Following</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                {% endif %}
+              </ul>
+            </div>
+          </nav>
+        
+        <div class="body">
+            {% block body %}
+            {% endblock %}
+        </div>
+    </body>
+</html>
